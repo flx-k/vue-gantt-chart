@@ -30,7 +30,7 @@ import {
     drawLine,
     repaint
 } from './../lib/draw'
-
+import {getDays,getMothDaysMap}from './../lib/date'
 export default {
     name: "ganttChat",
     data() {
@@ -39,7 +39,7 @@ export default {
             perHeight: 20,
             canvasIds: [],
             perSize: 40,
-            timeLineWidth: 10000,
+            timeLineWidth: 0,
             months: [1, 2, 3, 4, 5, 6],
             monthsMap: {
                 1: 31,
@@ -54,10 +54,11 @@ export default {
                 10:30,
                 11:30,
                 12:30
-            }
+            },
+            dateMap:{}
         }
     },
-    props: ['datas'],
+    props: ['datas','start','end'],
 
     mounted() {
         this.init(this.products)
@@ -66,6 +67,14 @@ export default {
 
         init(arr) {
             this.canvasIds = [];
+            
+            this.dateMap=getMothDaysMap(this.start,this.end)
+            console.error(this.dateMap)
+
+            let ds=this.dateMap['days']
+            console.error(ds)
+            this.timeLineWidth=40*ds;
+            console.error(this.timeLineWidth)
             for (var i = 0; i < arr.length; i++) {
                 this.initP(arr[i].tasks, arr[i].id)
             }

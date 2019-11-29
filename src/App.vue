@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-    <gantt-chat :datas="datas"></gantt-chat>
+    <gantt-chat :datas="datas" start="2018-1-1" end="2018-7-1"></gantt-chat>
 </div>
 </template>
 

@@ -54,8 +54,11 @@ function _drawLine(id, fx, fy, tx, ty) {
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.beginPath();
         ctx.moveTo(5, c.height - 5);
+        
         ctx.lineTo(c.width/2, c.height - 5);
+        
         ctx.lineTo(c.width/2, 5);
+
         ctx.lineTo(c.width - 5, 5);
     }
     ctx.stroke()
