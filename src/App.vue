@@ -14,20 +14,33 @@ export default {
                 name: "p1",
                 tasks: [{
                     id: 'ap',
-                    name: 't1'
+                    name: 't1',
+                    start:'2018-2-1',
+                    end:'2018-2-5'
                 }, {
                     id: 'op',
-                    name: 't2'
+                    name: 't2',
+                    start:'2018-2-7',
+                    end:'2018-2-12'
+                }, {
+                    id: 'dp',
+                    name: 't3',
+                    start:'2018-2-17',
+                    end:'2018-2-22'
                 }]
             },{
                 id: "p2",
                 name: "p2",
                 tasks: [{
                     id: 'ds',
-                    name: 't11'
+                    name: 't11',
+                    start:'2018-3-7',
+                    end:'2018-3-12'
                 }, {
                     id: 'cs',
-                    name: 't22'
+                    name: 't22',
+                    start:'2018-3-17',
+                    end:'2018-3-20'
                 }]
             }],
             msg: 'Welcome to Your Vue.js App'

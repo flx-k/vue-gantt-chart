@@ -16,11 +16,14 @@ function getMothDaysMap(date1, date2) {
   var now = new Date(date2);
   var sy = sdate.getFullYear();
   var sm = sdate.getMonth() + 1;
-  var ny = sdate.getFullYear();
-  var nm = sdate.getMonth() + 1;
+  var ny = now.getFullYear();
+  var nm = now.getMonth() + 1;
   let map = {};
   let marr=[];
   let days = 0;
+  console.info("data:"+sy+"  -"+sm+"  -")
+  console.info("data:"+ny+"  -"+nm+"  -")
+
   for (var y = sy; y <= ny; y++) {
     if (y == ny) {
       for (var m = sm; m <= nm; m++) {
@@ -41,6 +44,7 @@ function getMothDaysMap(date1, date2) {
     }
   }
   map['days']=days
+  map['months']=marr
   return map;
 }
 

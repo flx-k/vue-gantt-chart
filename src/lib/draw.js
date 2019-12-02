@@ -73,6 +73,15 @@ function repaint(arr, id) {
     });
 
 }
+function repaintAll(arr, id) {
+    arr.forEach(element => {
+        if (element.indexOf(id) >= 0) {
+            let ids=element.split('_')
+            drawLine(element, ids[0], ids[1])
+        }
+    });
+
+}
 export{
     drawLine,createCanvas,repaint
 }
