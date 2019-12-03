@@ -14,7 +14,7 @@
             <div class="task_div" :id="prod.id+'_'" @mousedown="startMoveP($event,prod)" :style="{width:'300px',height:perHeight+'px',left:0+'px',top:10+'px'}">
                 {{prod.name}}
             </div>
-            <div class="task_div" :class="[prod.id]" :id="task.id" @mousedown="startMove($event,prod.id,task.id)" v-for="(task,i) in prod.tasks" :key="task.id" :style="{width:'100px',height:perHeight+'px',left:(i+1)*150+'px',top:(i+1)*30+10+'px'}">
+            <div class="task_div" :class="[prod.id]" :id="task.id" @mousedown="startMove($event,prod,task)" v-for="(task,i) in prod.tasks" :key="task.id" :style="{width:'100px',height:perHeight+'px',left:(i+1)*150+'px',top:(i+1)*30+10+'px'}">
                 {{task.name}}
             </div>
         </div>
@@ -40,6 +40,7 @@ import {
 } from './../lib/draw'
 import {
     getDays,
+    buildDate,
     getMothDaysMap
 } from './../lib/date'
 export default {
@@ -73,33 +74,36 @@ export default {
     props: ['datas', 'start', 'end'],
 
     mounted() {
-        this.init(this.products)
+        this.init(this.products, true)
     },
     methods: {
 
-        init(arr) {
-            this.canvasIds = [];
-            this.dateMap = getMothDaysMap(this.start, this.end)
-            this.months = this.dateMap.months;
-            this.monthsMap = this.dateMap;
-            let ds = this.dateMap['days']
-            this.timeLineWidth = this.timeWidth * ds;
+        init(arr, init) {
+            if (true) {
+                this.canvasIds = [];
+                this.dateMap = getMothDaysMap(this.start, this.end)
+                this.months = this.dateMap.months;
+                this.monthsMap = this.dateMap;
+                let ds = this.dateMap['days']
+                this.timeLineWidth = this.timeWidth * ds;
+            }
             for (var i = 0; i < arr.length; i++) {
-                this.initP(arr[i].tasks, arr[i].id)
+                this.initP(arr[i].tasks, arr[i].id, init)
             }
         },
 
-        initP(arr, pid) {
+        initP(arr, pid, init) {
             let minStart = null;
             let maxEnd = null;
-
             for (var i = 0; i < arr.length; i++) {
-                let _s=new Date(arr[i].start).getTime();
-                let _e=new Date(arr[i].end).getTime();
-                if (minStart == null || minStart >_s)
+                let _s = new Date(arr[i].start).getTime();
+                let _e = new Date(arr[i].end).getTime();
+                if (minStart == null || minStart > _s)
                     minStart = _s;
                 if (maxEnd == null || maxEnd < _e)
                     maxEnd = _e;
+                if (!init)
+                    continue;
                 initWidth(arr[i].id, this.start, arr[i].start, arr[i].end, this.timeWidth)
                 if (i == 0)
                     continue;
@@ -110,13 +114,15 @@ export default {
                 createCanvas(pid, lineId, fId, tId)
                 drawLine(lineId, fId, tId)
             }
-            console.error(minStart+"  ---  "+maxEnd)
-            initWidth(pid+"_", this.start, minStart, maxEnd, this.timeWidth)
+            initWidth(pid + "_", this.start, minStart, maxEnd, this.timeWidth)
         },
-        startMove(even, prodId, id) {
+        startMove(even, prod, task) {
+            let id = task.id;
+            let prodId = prod.id;
             even.stopPropagation();
             let div = document.getElementById(id);
-            let disX = even.clientX - parseInt(div.style.left);
+            let _left = parseInt(div.style.left);
+            let disX = even.clientX - _left;
             document.onmousemove = (e) => {
                 let left = e.clientX - disX;
                 div.style.left = left + 'px';
@@ -128,8 +134,13 @@ export default {
                 l = a * this.timeWidth;
                 div.style.left = l + 'px';
                 repaint(this.canvasIds, id)
+                let _d = (l - _left) / this.timeWidth;
+                task.start = buildDate(task.start, _d)
+                task.end = buildDate(task.end, _d)
                 document.onmousemove = null;
                 document.onmouseup = null;
+                this.initP(prod.tasks, prodId, false)
+                this.$emit("updateTask", task);
             };
         },
         startMoveP(even, prod) {
@@ -138,7 +149,8 @@ export default {
             let tasksDiv = document.getElementsByClassName(id);
             even.stopPropagation();
             let div = document.getElementById(id + "_");
-            let disX = even.clientX - parseInt(div.style.left);
+            let _left = parseInt(div.style.left);
+            let disX = even.clientX - _left;
 
             document.onmousemove = (e) => {
                 let left = e.clientX - disX;
@@ -151,9 +163,6 @@ export default {
                     console.error(element.id)
                     element.style.left = parseInt(element.style.left) + _l + 'px'
                 }
-                // tasksDiv.forEach(element => {
-                //     element.style.left=element.style.left+_l+'px'
-                // });
                 repaint(this.canvasIds, id)
             };
             document.onmouseup = (e) => {
@@ -163,13 +172,19 @@ export default {
                 div.style.left = l + 'px';
                 for (var i = 0; i < tasksDiv.length; i++) {
                     let element = tasksDiv[i]
-                    console.error(element.id)
                     let _l = Math.round(parseInt(element.style.left) / this.timeWidth) * this.timeWidth;
                     element.style.left = _l + 'px'
                 }
+                let _d = (l - _left) / this.timeWidth;
+                prod.tasks.forEach(t => {
+                    t.start=buildDate(t.start,_d)
+                    t.end=buildDate(t.end,_d)
+                });
                 repaint(this.canvasIds, id)
                 document.onmousemove = null;
                 document.onmouseup = null;
+                this.$emit("updateProduct", prod);
+
             };
         },
     }

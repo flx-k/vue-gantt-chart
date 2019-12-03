@@ -1,6 +1,8 @@
 <template>
 <div id="app">
-    <gantt-chat :datas="datas" start="2018-1-1" end="2018-7-1"></gantt-chat>
+    <pre>{{datas}}</pre>
+    <pre>{{re}}</pre>
+    <gantt-chat :datas="datas" @updateTask="t" @updateProduct="t" start="2018-1-1" end="2018-7-1"></gantt-chat>
 </div>
 </template>
 
@@ -9,6 +11,7 @@ export default {
     name: 'app',
     data() {
         return {
+            re:null,
             datas: [{
                 id: "p1",
                 name: "p1",
@@ -44,6 +47,11 @@ export default {
                 }]
             }],
             msg: 'Welcome to Your Vue.js App'
+        }
+    },
+    methods:{
+        t(e){
+            this.re=e
         }
     }
 }

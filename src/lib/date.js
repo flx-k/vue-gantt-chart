@@ -19,10 +19,10 @@ function getMothDaysMap(date1, date2) {
   var ny = now.getFullYear();
   var nm = now.getMonth() + 1;
   let map = {};
-  let marr=[];
+  let marr = [];
   let days = 0;
-  console.info("data:"+sy+"  -"+sm+"  -")
-  console.info("data:"+ny+"  -"+nm+"  -")
+  console.info("data:" + sy + "  -" + sm + "  -")
+  console.info("data:" + ny + "  -" + nm + "  -")
 
   for (var y = sy; y <= ny; y++) {
     if (y == ny) {
@@ -43,13 +43,21 @@ function getMothDaysMap(date1, date2) {
       }
     }
   }
-  map['days']=days
-  map['months']=marr
+  map['days'] = days
+  map['months'] = marr
   return map;
 }
 
+function buildDate(date1, days) {
+  let date = new Date(new Date(date1).getTime() + days * 24 * 3600 * 1000);
+  let sy = date.getFullYear();
+  let sm = date.getMonth() + 1;
+  let sd = date.getDate();
+  return sy + '-' + sm + '-' + sd
+}
 
 export {
   getDays,
+  buildDate,
   getMothDaysMap
 }
